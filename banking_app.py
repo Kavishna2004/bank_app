@@ -1,131 +1,143 @@
-accounts = {} 
-users = [] 
-transaction_history = [] 
+account_details = []
+account_number = []
 
-print("---WELCOME TO MINI BANKING---")
-#-------------------------------create customer-----------------------------------------
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ CREATE CUSTOMER ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+
 def create_customer():
-    try:
-        customer_id = input("Enter the customer ID: ")
-        username = input("Enter the username: ")
-        password = input("Enter the password: ")
-        nic = input("Enter the NIC number: ")
-        account_number = input("Enter the account number: ")
+    user_id = input("Enter your user ID: ")
+    username = input("Enter the user name: ")
+    password = input("Enter your password: ") 
+    nic = int(input("Enter your NIC number: "))
+    address = input("Enter your valuable address: ")
+    t_no = int(input("Enter your Mobile number: "))
+    DOB = input("Enter your date of birth(DD/MM/YYYY): ")
 
-        with open("account.txt", "a") as file:
-            file.write(f'{customer_id}\t{username}\t{password}\t{nic}\t{account_number}\t{balance}\n')
-    except ValueError:
-        print("You must enter a number only!")
+    with open("customers.txt", "a") as customer_file:
+        customer_file.write(f'{user_id}\t{username}\t{password}\t{nic}\t{address}\t{t_no}\t{DOB}\n')
 
-# ---------------------------------- Account Creation -----------------------------------
+    print("Customer created successfully. Now you're a customer of the Mini Banking!")
+    print(f"Hii {username}, Welcome to the Mini Banking System!")
+    
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ CREATE ACCOUNT ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+
 def create_account():
-    try:
-        customer_id = input("Enter the customer ID: ")
-        username = input("Enter your username: ")
-        password = input("Enter the password: ")
-        nic = input("Enter the NIC number: ")
-        account_number = input("Enter the account number: ")
-        balance = 0 
+    customer_id = input("Enter the account user id: ")
+    acc_number = input("Enter the account number: ")
+    holder_name = input("Enter your account holder name: ")
+    initial_balance = int(input("Enter the Initial balance: "))
 
-        accounts[account_number] = {
-            "customer_id": customer_id,
-            "username": username,
-            "password": password,
-            "NIC": nic,
-            "balance": balance
-        }
+    account_number.append(acc_number)  
+    account_details.append({
+        "account_number": acc_number,
+        "holder_name": holder_name,
+        "balance": initial_balance
+    })
+             
+    with open("accounts.txt", "a") as accounts_file:
+        accounts_file.write(f"{customer_id},{acc_number},{holder_name},{initial_balance}\n")
 
-        with open("account.txt", "a") as file:
-            file.write(f'{customer_id}\t{username}\t{password}\t{nic}\t{account_number}\t{balance}\n')
-
-        print("Account created successfully!")
+    print("Account created successfully!")
     
-    except Exception as e:
-        print("Error: ", e)
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ DEPOSIT OPTION ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]   
 
-# ---------------------------------- Deposit Option -----------------------------------
-def deposit(account_number):
+def deposit_amount():
     try:
-        if account_number in accounts:
-            deposit_amount = int(input("Enter your deposit amount: $"))
-            if deposit_amount > 0:
-                accounts[account_number]["balance"] += deposit_amount
-                print(f"Deposit successful! New Balance: ${accounts[account_number]['balance']:.2f}")
-
-                with open("transactions.txt", "a") as file:
-                    file.write(f"{account_number}\tDeposit\t${deposit_amount}\t{accounts[account_number]['balance']}\n")
-            else:
-                print("Invalid amount! Deposit must be greater than 0.")
-        else:
-            print("Account not found!")
-    
+        acc_no = input("Enter your account number: ")  
+        with open ("accounts_details.txt","r") as accounts_file:
+            for lines in accounts_file:
+                line = lines.strip().split(',')
+                
+                if acc_no == line[1]:
+                    amount = float(input("Enter your deposit amount: RS. "))
+                    new_balance = float(line[3]) + amount 
+                    
+                    with open ("accounts_details.txt",'r') as accounts_file:
+                        line = lines.strip().split(',')
+                        
+                    with open ("accounts.txt",'w') as accounts_file:
+                        line = lines.strip().split(',')
+                        
+                        if lines[0] == acc_no:
+                            lines[2] == new_balance
+                            accounts_file(f"{lines[0]},{lines[1]},{lines[2]},{lines[3]}/n")
+                            
+                    from datetime import datetime
+                    current_date_time = datetime.now()
+                    new_date_time == current_date_time.strftime("%d/%m/%y %H:%M")    
+                    
+                    with open ("transaction.txt","r")as tansaction_file:
+                        tansaction_file.write(f"{new_date_time},{acc_no},Deposit'{amount},{new_balance}n")
+                        print(f"\nDeposit Successfull.\n Deposit amount : Rs {amount}\n new_balance: RS {new_balance}")
+                        found = True
+                                    
+            if not found:
+                print("Account not found!") 
+            
     except ValueError:
-        print("You must enter a valid number!")
-
-# --------------------------------- Withdraw Option -----------------------------------
-def withdraw(account_number):
+        print("You must enter a number only!")  
+                
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ WITHRRAWEL OPTION ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]      
+          
+def withdraw_amount():
     try:
-        if account_number in accounts:
-            withdrawal_amount = int(input("Enter your withdrawal amount: $"))
-            if withdrawal_amount > 0 and accounts[account_number]["balance"] >= withdrawal_amount:
-                accounts[account_number]["balance"] -= withdrawal_amount
-                print(f"Withdrawal successful! New Balance: ${accounts[account_number]['balance']:.2f}")
-
-                with open("transactions.txt", "a") as file:
-                    file.write(f"{account_number}\tWithdrawal\t${withdrawal_amount}\t{accounts[account_number]['balance']}\n")
-            else:
-                print("Insufficient balance or invalid amount!")
-        else:
-            print("Account not found!")
-    
+        acc_no = input("Enter your account number: ")  
+        with open ("accounts_details.txt","r") as accounts_file:
+            for lines in accounts_file:
+                line = lines.strip().split(',')
+                
+                if acc_no == line[1]:
+                    amount = float(input("Enter your deposit amount: RS. "))
+                    new_balance = float(line[3]) + amount 
+                    
+                    with open ("accounts_details.txt",'r') as accounts_file:
+                        line = lines.strip().split(',')
+                        
+                    with open ("accounts.txt",'w') as accounts_file:
+                        line = lines.strip().split(',')
+                        
+                    if lines[0] == acc_no:
+                            lines[2] == new_balance
+                            accounts_file(f"{lines[0]},{lines[1]},{lines[2]},{lines[3]}/n")
+                            
+                    from datetime import datetime
+                    current_date_time = datetime.now()
+                    new_date_time == current_date_time.strftime("%d/%m/%y %H:%M")
+                        
+                   
+                    with open ("transaction.txt","r")as tansaction_file:
+                        tansaction_file.write(f"{new_date_time},{acc_no},withdraw'{amount},{new_balance}n")
+                        print(f"\nWithdraw Successfull.\n Withdraw amount : Rs {amount}\n new_balance: RS {new_balance}")
+                        found = True
+                                    
+            if not found:
+                print("Account not found!") 
+            
     except ValueError:
-        print("You must enter a valid number!")
+        print("You must enter a number only!")  
+                        
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ CHECK BALANCE [[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]          
 
-# ------------------------------- Check Balance -----------------------------------
-def show_balance(account_number):
-    if account_number in accounts:
-        print(f"Your current account balance is: ${accounts[account_number]['balance']}")
-    else:
-        print("Account not found!")
-
-# ------------------------------- Transaction History ------------------------------
-def all_the_transaction_history():
-    try:
-        with open("transactions.txt", "r") as file:
-            transactions = file.readlines()
-
-        if transactions:
-            print("\nTransaction History:")
-            for transaction in transactions:
-                data = transaction.split('\t')
-                account_number = data[0]
-                transaction_type = data[1]
-                amount = data[2]
-                balance = data[3].strip()
-                print(f"Account Number: {account_number}, Type: {transaction_type}, Amount: {amount}, New Balance: {balance}")
-        
-        else:
-            print("No transactions available.")
+def show_balance():
+    print(f"Your current account balance is: RS.{balance:.2f}")  
     
-    except FileNotFoundError:
-        print("Transaction history file not found!")
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ TRANSACTION HISTORY [[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+   
+def transaction_history():
+    accountNumber = input("Enter your account number: ").strip()  
+    
+    found = False
+    with open("transaction.txt", "r") as transaction_file:
+        for line in transaction_file:
+            if line.startswith(accountNumber): 
+                print(f"Transaction Details For The Account {accountNumber}: {line.strip()}") 
+                found = True
+             
+    if not found:
+        print(f"Transaction Details Not Found For This Account {accountNumber}")
+         
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ ADMIN MENU ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 
-# ------------------------------- Admin Login and Menu -----------------------------
-def admin_login():
-    admin_user_ID = int(input("Enter your user ID: "))
-    username = input("Enter your username: ")
-    password = input("Enter your password: ")
-
-    for user in users:
-        if user["id"] == admin_user_ID and user["username"] == username and user["password"] == password:
-            print("Login Successful!")
-            admin_menu(username)
-            return
-
-    print("Login Failed. Please try again.")
-
-# ------------------------------- Admin Menu ---------------------------------------
-def admin_menu(username):
+def admin_menu():
     while True:
         print("-----WELCOME TO MINI BANKING----")
         print("1. Create customer")
@@ -140,27 +152,16 @@ def admin_menu(username):
         elif choice == "2":
             create_account()
         elif choice == "3":
-            all_the_transaction_history()
+            transaction_history()
         elif choice == "4":
             print("Thank you for your service. Goodbye!")
             break
         else:
             print("Invalid Input. Try again!")
-
-# ------------------------------- Customer Login and Menu --------------------------
-def customer_login():
-    account_number = input("Enter your account number: ")
-    username = input("Enter your username: ")
-    password = input("Enter your password: ")
-
-    if account_number in accounts and accounts[account_number]["username"] == username and accounts[account_number]["password"] == password:
-        print(f"Login Successful. Welcome Customer {username}")
-        customer_menu(account_number)
-    else:
-        print("Login Failed. Please check your credentials.")
-
-# ------------------------------- Customer Menu -----------------------------------
-def customer_menu(account_number):
+            
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[Customer Menu ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]         
+                                 
+def customer_menu():
     while True:
         print("-----WELCOME TO MINI BANKING----")
         print("1. Deposit Money")
@@ -169,28 +170,86 @@ def customer_menu(account_number):
         print("4. Transaction History")
         print("5. Exit")
         
-        choice = input("Enter your choice: ")
+        choice = input("Enter your choice(1-5): ")
 
         if choice == "1":
-            deposit(account_number)
+            deposit_amount()
         elif choice == "2":
-            withdraw(account_number)
+            withdraw_amount()
         elif choice == "3":
-            show_balance(account_number)
+            show_balance()
         elif choice == "4":
-            all_the_transaction_history()
+            transaction_history()
         elif choice == "5":
             print("Thank you for your service. Goodbye!")
             break
         else:
             print("Invalid choice. Please try again.")
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ Admin Login ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]         
+                                 
+def admin_login():
+    while True:
+        admin_name = "kavish"
+        admin_password = "kavish2004"
+        admin_id = "A01"
+        choice = input("Enter the choice: ")
 
-# ------------------------------- Main Menu ---------------------------------------
+        if choice == "1": 
+            username = input("Enter the username: ")
+            password = input("Enter the password: ")
+            user_id = input("Enter the user ID: ")
+
+            if username == admin_name and password == admin_password and user_id == admin_id:
+                print("Login Successful!!")
+                print(f"Hi! {username}, Welcome to the system Admin")
+                admin_menu()
+        
+        elif choice == "2":
+            username = input("Enter the username: ")
+            password = input("Enter the password: ")
+            user_id = input("Enter the user ID: ")
+
+            with open("users.txt", "r") as users_file:  
+                for user in users_file:
+                    users_login_details = user.strip().split()
+                    if username in users_login_details and password in users_login_details and user_id in users_login_details:
+                        admin_menu()
+                        
+        else:
+            print("Admin Details Not correct. Try Again!")
+            break
+        
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ Customer Login ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]         
+                                 
+def customer_login():
+    while True:
+        customer_name = input("Enter the customer name: ")
+        customer_password = input("Enter the customer password: ")
+        customer_id = input("Enter the customer ID: ")
+
+        with open("customers.txt", "r") as customers_file:  
+            for customer in customers_file:
+                customer_login_details = customer.strip().split()
+                if customer_name in customer_login_details and customer_password in customer_login_details and customer_id in customer_login_details:
+                    print("Login Successful!!")
+                    print(f"Hi! {customer_name}, Welcome to the system customer!")   
+                    customer_menu()
+                    return
+            
+            print("Customer Details Not correct. Try Again!")
+            break
+
 while True:
-    role = input("Enter the Role (admin or customer): ").lower()
-    if role == "admin":
+    print("1. Admin")
+    print("2. Customer")
+    role = input("Enter the Role (1 or 2): ")
+    if role == "1":
         admin_login()
-    elif role == "customer":
+    elif role == "2":
         customer_login()
     else:
         print("Login Unsuccessful. Try Again!")
+        print("Please choose 1 OR 2")
+        break
+
+#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]

@@ -1,5 +1,0 @@
-c001 yadhu 2005 
-c002 abi 2010
-c003 jasu 2014
-c004 devi 1972
-c005 raj 1966
