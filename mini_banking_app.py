@@ -1,3 +1,4 @@
+import random
 account_details = []
 account_number = []
 
@@ -125,7 +126,7 @@ def show_balance():
     if not found:
         print("Account not found.")
         
-#[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ TRANSACTION HISTORY ]]][[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]    
+# [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ TRANSACTION HISTORY ]]][[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]    
 
 def transaction_history():
     acc_no = input("\nEnter your account number to view transaction history: ")
